@@ -134,7 +134,7 @@ namespace DatabaseLibrary.Service
             await _context.CinemaUsers.AddAsync(user);
             await _context.SaveChangesAsync();
         }
-        private async Task<CinemaUser?> FindUserByLoginAsync(string login)
+        public async Task<CinemaUser?> FindUserByLoginAsync(string login)
             => await _context.CinemaUsers
                 .FirstOrDefaultAsync(u => u.Login == login);
 

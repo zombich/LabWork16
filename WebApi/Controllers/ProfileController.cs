@@ -1,6 +1,9 @@
-﻿using DatabaseLibrary.Models;
+﻿using DatabaseLibrary.Contexts;
+using DatabaseLibrary.Models;
+using DatabaseLibrary.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,14 +13,14 @@ namespace WebApi.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
+        private readonly AuthService _authService = new(new CinemaUserDbContext());
         // GET: api/<ProfileController>
         [Authorize]
         [HttpGet]
-        public ActionResult<CinemaUser> GetUserData()
+        public async Task<ActionResult<CinemaUser>> GetUserData()
         {
-
-
-            return null;
+            var claim = User.Claims.FirstOrDefault(u => u.Type == "login");
+            return await _authService.FindUserByLoginAsync(claim.Value);
         }
     }
 }
