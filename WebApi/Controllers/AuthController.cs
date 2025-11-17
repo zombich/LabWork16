@@ -1,10 +1,8 @@
-﻿using DatabaseLibrary.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using DatabaseLibrary.Contexts;
+using DatabaseLibrary.DTOs;
 using DatabaseLibrary.Service;
-using DatabaseLibrary.Contexts;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,9 +25,12 @@ namespace DatabaseLibrary.Controllers
         // POST api/<UsersController>
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<TokenResponse?> LoginUser([FromBody] LoginRequest request)
+        public async Task<ActionResult<TokenResponse?>> LoginUser([FromBody] LoginRequest request)
         {
-            return await _authService.AuthUserAsync(request);
+            var token = await _authService.AuthUserAsync(request);
+            if (token is null)
+                return Forbid();
+            return token;
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using DatabaseLibrary.Contexts;
 using DatabaseLibrary.DTOs;
 using DatabaseLibrary.Models;
+using DatabaseLibrary.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using DatabaseLibrary.Options;
 
 namespace DatabaseLibrary.Service
 {
@@ -44,8 +44,8 @@ namespace DatabaseLibrary.Service
             string login = request.Login;
             string password = request.Password;
 
-            //if (login.IsNullOrEmpty() || password.IsNullOrEmpty())
-            //    return false;
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+                return false;
 
             var selectedUser = await FindUserByLoginAsync(login);
 
@@ -91,6 +91,7 @@ namespace DatabaseLibrary.Service
             await IncreaseFailedLoginAttemptsAsync(user);
             return null;
         }
+
         private async Task IncreaseFailedLoginAttemptsAsync(CinemaUser user)
         {
             int attempts = 3;
@@ -118,7 +119,7 @@ namespace DatabaseLibrary.Service
             => BCrypt.Net.BCrypt.EnhancedHashPassword(password);
 
         private bool VerifyPassword(string password, string passwordHash)
-        => BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
+            => BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
 
         public async Task<CinemaUserRole?> GetUserRoleByLoginAsync(string login)
         {
