@@ -1,4 +1,5 @@
 ﻿using DatabaseLibrary.Contexts;
+using DatabaseLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ namespace DatabaseLibrary.Services
     public class FilmService(CinemaUserDbContext context)
     {
         private readonly CinemaUserDbContext _context = context;
-        public static async Task<IEnumerable<Film>> GetFilmsByPages(int? page)
+        public async Task<IEnumerable<Film>> GetFilmsByPages(int? page)
         {
             var films = _context.Films.AsQueryable();
             var pageSize = 2;
             films = films.Skip(pageSize * ((int)page - 1)).Take(pageSize);
             return await films.ToListAsync();
         }
-        public static async Task<IEnumerable<Film>> GetFilms() 
+        public async Task<IEnumerable<Film>> GetFilms()
             => await _context.Films.ToListAsync();
     }
 }
