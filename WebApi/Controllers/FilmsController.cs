@@ -1,4 +1,6 @@
-﻿using DatabaseLibrary.Models;
+﻿using DatabaseLibrary.Contexts;
+using DatabaseLibrary.Models;
+using DatabaseLibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +12,18 @@ namespace WebApi.Controllers
     [ApiController]
     public class FilmsController : ControllerBase
     {
+        private readonly FilmService _filmService = new(new CinemaUserDbContext());
+        //[AllowAnonymous]
+        //[HttpGet]
+        //public async Task<IEnumerable<Film>> GetFilmsByPages(int? page = 1)
+        //{
+        //    return await _filmService.GetFilmsByPages(page);
+        //}
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Film>>> GetFilms(int? page = 1)
+        public async Task<IEnumerable<Film>> GetFilms()
         {
-            return await GetFilmsByPages(page);
+            return await _filmService.GetFilms();
         }
     }
 }

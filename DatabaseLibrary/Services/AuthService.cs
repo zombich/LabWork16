@@ -25,9 +25,9 @@ namespace DatabaseLibrary.Service
 
             var claims = new Claim[]
             {
-                new ("id", user.UserId.ToString()),
-                new ("login", user.Login),
-                new ("role", role.Name),
+                    new ("id", user.UserId.ToString()),
+                    new ("login", user.Login),
+                    new ("role", role.Name),
             };
 
             var token = new JwtSecurityToken(signingCredentials: credentials,

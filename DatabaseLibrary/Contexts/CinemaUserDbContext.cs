@@ -16,6 +16,12 @@ public partial class CinemaUserDbContext : DbContext
     {
     }
 
+    public virtual DbSet<CinemaPrivilege> CinemaPrivileges { get; set; }
+
+    public virtual DbSet<CinemaUser> CinemaUsers { get; set; }
+
+    public virtual DbSet<CinemaUserRole> CinemaUserRoles { get; set; }
+
     public virtual DbSet<Film> Films { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
@@ -26,6 +32,56 @@ public partial class CinemaUserDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CinemaPrivilege>(entity =>
+        {
+            entity.HasKey(e => e.PrivilegeId);
+
+            entity.ToTable("CinemaPrivilege");
+
+            entity.Property(e => e.Name).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<CinemaUser>(entity =>
+        {
+            entity.HasKey(e => e.UserId);
+
+            entity.ToTable("CinemaUser");
+
+            entity.Property(e => e.Login).HasMaxLength(50);
+            entity.Property(e => e.PasswordHash).HasMaxLength(200);
+
+            entity.HasOne(d => d.Role).WithMany(p => p.CinemaUsers)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CinemaUser_CinemaUserRole");
+        });
+
+        modelBuilder.Entity<CinemaUserRole>(entity =>
+        {
+            entity.HasKey(e => e.RoleId);
+
+            entity.ToTable("CinemaUserRole");
+
+            entity.Property(e => e.Name).HasMaxLength(20);
+
+            entity.HasMany(d => d.Privileges).WithMany(p => p.Roles)
+                .UsingEntity<Dictionary<string, object>>(
+                    "CinemaRolePrivilege",
+                    r => r.HasOne<CinemaPrivilege>().WithMany()
+                        .HasForeignKey("PrivilegeId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_CinemaRolePrivilege_CinemaPrivilege"),
+                    l => l.HasOne<CinemaUserRole>().WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_CinemaRolePrivilege_CinemaUserRole"),
+                    j =>
+                    {
+                        j.HasKey("RoleId", "PrivilegeId");
+                        j.ToTable("CinemaRolePrivilege");
+                    });
+        });
+
         modelBuilder.Entity<Film>(entity =>
         {
             entity.ToTable("Film", tb => tb.HasTrigger("TrDeleteFilm"));

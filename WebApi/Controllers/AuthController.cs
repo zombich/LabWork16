@@ -14,7 +14,7 @@ namespace DatabaseLibrary.Controllers
     {
         private readonly AuthService _authService = new(new CinemaUserDbContext());
 
-        // POST api/<UsersController>
+        //POST api/<UsersController>
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<bool> RegisterUser([FromBody] LoginRequest request)
@@ -22,7 +22,7 @@ namespace DatabaseLibrary.Controllers
             return await _authService.RegistrateUserAsync(request);
         }
 
-        // POST api/<UsersController>
+        //POST api/<UsersController>
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<TokenResponse?>> LoginUser([FromBody] LoginRequest request)
