@@ -11,12 +11,12 @@ CinemaUser user = new CinemaUser()
     Login = "user",
     UserId = 1,
 };
+string roleName = "Пользователь";
 
-
-var token = await GenerateTokenAsync(user);
+var token = await GenerateTokenAsync(user, roleName);
 Console.WriteLine(token.Token);
 
-async Task<TokenResponse> GenerateTokenAsync(CinemaUser user)
+async Task<TokenResponse> GenerateTokenAsync(CinemaUser user, string roleName)
 {
     int minutes = 15;
 
@@ -27,7 +27,7 @@ async Task<TokenResponse> GenerateTokenAsync(CinemaUser user)
     {
                 new ("id", user.UserId.ToString()),
                 new ("login", user.Login),
-                new ("role", "Пользователь"),
+                new ("role", roleName),
     };
 
     var token = new JwtSecurityToken(signingCredentials: credentials,

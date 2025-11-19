@@ -129,7 +129,7 @@ namespace DatabaseLibrary.Service
             return user?.Role;
         }
 
-        private async Task AddUserAsync(CinemaUser user)
+        public async Task AddUserAsync(CinemaUser user)
         {
             await _context.CinemaUsers.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -141,5 +141,21 @@ namespace DatabaseLibrary.Service
         private async Task<CinemaUserRole?> GetRoleByNameAsync(string name)
             => await _context.CinemaUserRoles
                 .FirstOrDefaultAsync(r => r.Name == name);
+
+        public async Task<IEnumerable<CinemaPrivilege?>> GetPrivilegesByRoleNameAsync(string name)
+        {
+            CinemaUserRole? role = await GetRoleByNameAsync(name);
+            return role.Privileges.ToList();
+        }
+
+        public async Task<bool> IsPrivilegeExists(string privilegeName, string roleName)
+        {
+            IEnumerable<CinemaPrivilege?> privileges = await GetPrivilegesByRoleNameAsync(roleName);
+            if (!privileges.Any())
+                return false;
+
+            CinemaPrivilege? selectedPrivilege = privileges.FirstOrDefault(p => p.Name == privilegeName);
+            return selectedPrivilege is not null;
+        }
     }
 }
