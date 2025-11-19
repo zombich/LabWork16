@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DatabaseLibrary.Models;
+﻿namespace DatabaseLibrary.Models;
 
 public partial class CinemaUser
 {

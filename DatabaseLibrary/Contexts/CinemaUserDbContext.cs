@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DatabaseLibrary.Models;
+﻿using DatabaseLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseLibrary.Contexts;
